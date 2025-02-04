@@ -1,0 +1,15 @@
+target/
+.idea/
+.DS_Store
+
+project/target/
+project/project/
+logs
+
+.scannerwork
+
+.metals/
+
+.vscode/
+
+
