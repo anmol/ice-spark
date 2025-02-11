@@ -8,6 +8,8 @@ import com.google.inject.AbstractModule
 import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.spark.sql.SparkSession
 
+import org.apg.module.IceSparkModule._
+
 import scala.util.Properties
 
 class IceSparkModule extends AbstractModule with LoggerSupport {
@@ -18,13 +20,17 @@ class IceSparkModule extends AbstractModule with LoggerSupport {
     bind(classOf[Environment]).toInstance(environment)
     bind(classOf[SparkSession]).toProvider(classOf[SparkSessionProvider]).asEagerSingleton()
 
-    val config = {
-      val iceSparkConfigFileName = "ice-spark"
-      ConfigFactory.load(s"$iceSparkConfigFileName.$environment")
-        .withFallback(ConfigFactory.load(iceSparkConfigFileName))
+    val config = environment match {
+      case Environment.LOCAL =>
+        ConfigFactory.load(s"$iceSparkConfigFileName.$environment.conf")
+      case _ =>
+        ConfigFactory.load(s"$iceSparkConfigFileName.conf")
     }
 
     bind(classOf[Config]).toInstance(config)
   }
+}
 
+object IceSparkModule {
+  private val iceSparkConfigFileName = "ice-spark"
 }

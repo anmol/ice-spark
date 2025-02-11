@@ -14,6 +14,15 @@ class SparkSessionProvider @Inject()(environment: Environment, appConfig: AppCon
   override def get(): SparkSession = {
     val sparkConf = new SparkConf()
       .setAppName(appConfig.appName)
+      .set("spark.sql.catalog.my_catalog", "org.apache.iceberg.spark.SparkCatalog")
+      .set("spark.sql.catalog.my_catalog.warehouse", appConfig.icebergCatalogWarehouse)
+      .set("spark.sql.catalog.my_catalog.type", appConfig.icebergCatalogType)
+      .set("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
+      .set("spark.sql.catalog.my_catalog.lf.managed", appConfig.icebergCatalogLfEnabled)
+      .set("spark.sql.catalog.my_catalog.client.assume-role.region", appConfig.icebergCatalogAwsRegion)
+      .set("spark.sql.catalog.my_catalog.glue.account-id", appConfig.icebergCatalogAwsAccountId)
+      .set("spark.sql.catalog.my_catalog.glue.id", appConfig.icebergCatalogAwsAccountId)
+      .set("spark.sql.defaultCatalog", "my_catalog")
 
     SparkSession.builder
       .master(if(environment.equals(Environment.LOCAL)) "local[*]" else "yarn")
