@@ -1,8 +1,7 @@
-package org.apg
+package org.apg.executors
 
 import com.google.inject.{Inject, Singleton}
-import com.typesafe.config.Config
-import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
+import org.apache.spark.sql.SparkSession
 
 @Singleton
 class Executor @Inject()(spark: SparkSession){
